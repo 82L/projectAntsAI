@@ -1,7 +1,6 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-#include <sys/time.h>
 
 /*
     struct for checking how long it has been since the start of the turn.
@@ -33,6 +32,8 @@
     };
 
 #else //Mac/Linux Timer
+
+#include <sys/time.h>
     struct Timer
     {
         timeval timer;
