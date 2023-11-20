@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f05c93eb-b4c4-4093-86f7-133621b836db}</ProjectGuid>
-    <RootNamespace>AntsProjects</RootNamespace>
+    <ProjectGuid>{ca521a67-2c9c-4dcc-9520-6dca8afaa795}</ProjectGuid>
+    <RootNamespace>ants</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -133,18 +133,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Bot.h" />
-    <ClInclude Include="src\Bug.h" />
     <ClInclude Include="src\Location.h" />
     <ClInclude Include="src\Square.h" />
     <ClInclude Include="src\State.h" />
     <ClInclude Include="src\Timer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Makefile" />
-    <None Include="src\VERSION" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\README.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
