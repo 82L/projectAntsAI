@@ -2,59 +2,53 @@
 
 using namespace std;
 
-//constructor
-Bot::Bot()
+void Bot::PlayGame()
 {
+    // Reads the game parameters and sets up
+    cin >> currentState;
+    currentState.Setup();
+    EndTurn();
 
-};
-
-//plays a single game of Ants.
-void Bot::playGame()
-{
-    //reads the game parameters and sets up
-    cin >> state;
-    state.setup();
-    endTurn();
-
-    //continues making moves while the game is not over
-    while(cin >> state)
+    // Continues making moves while the game is not over
+    while (cin >> currentState)
     {
-        state.updateVisionInformation();
-        makeMoves();
-        endTurn();
+        currentState.UpdateVisionInformation();
+        MakeMoves();
+        EndTurn();
     }
-};
+}
 
-//makes the bots moves for the turn
-void Bot::makeMoves()
+void Bot::MakeMoves()
 {
-    state.bug << "turn " << state.turn << ":" << endl;
-    state.bug << state << endl;
+    currentState.bug << "turn " << currentState.currentTurn << ":" << endl;
+    currentState.bug << currentState << endl;
 
-    //picks out moves for each ant
-    for(int ant=0; ant<(int)state.myAnts.size(); ant++)
+    // Picks out moves for each ant
+    for (int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
-        for(int d=0; d<TDIRECTIONS; d++)
+        for (int d = 0; d < T_DIRECTIONS; d++)
         {
-            Location loc = state.getLocation(state.myAnts[ant], d);
+            const Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], d);
 
-            if(!state.grid[loc.row][loc.col].isWater)
+            if (!currentState.grid[antCheckLocation.row][antCheckLocation.col].isWater)
             {
-                state.makeMove(state.myAnts[ant], d);
-                break;
+                currentState.MakeAntMove(currentState.myAnts[ant], 1);
+            }
+            else
+            {
+                currentState.MakeAntMove(currentState.myAnts[ant], 2);
             }
         }
     }
 
-    state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
-};
+    currentState.bug << "time taken: " << currentState.timer.GetDuration() << "ms" << endl << endl;
+}
 
-//finishes the turn
-void Bot::endTurn()
+void Bot::EndTurn()
 {
-    if(state.turn > 0)
-        state.reset();
-    state.turn++;
+    if (currentState.currentTurn > 0)
+        currentState.Reset();
+    currentState.currentTurn++;
 
     cout << "go" << endl;
-};
+}

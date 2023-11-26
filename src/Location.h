@@ -1,23 +1,29 @@
 #ifndef LOCATION_H_
 #define LOCATION_H_
 
-/*
-    struct for representing locations in the grid.
-*/
+/**
+    \brief Struct for representing locations in the grid.
+**/
 struct Location
 {
-    int row, col;
+    int row;
+    int col;
 
     Location()
     {
-        row = col = 0;
-    };
+        row = 0;
+        col = 0;
+    }
 
-    Location(int r, int c)
+    /** 
+     * \param r row
+     * \param c column
+     */
+    Location(const int r, const int c)
     {
         row = r;
         col = c;
-    };
+    }
 };
 
 #endif //LOCATION_H_

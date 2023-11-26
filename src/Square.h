@@ -3,30 +3,40 @@
 
 #include <vector>
 
-/*
-    struct for representing a square in the grid.
-*/
+/**
+    \brief Struct for representing a square in the grid.
+**/
 struct Square
 {
-    bool isVisible, isWater, isHill, isFood;
-    int ant, hillPlayer;
+#pragma region Members
+
+    // Square states
+    bool isVisible = false;
+    bool isWater = false;
+    bool isHill = false;
+    bool isFood = false;
+
+    int ant = -1;
+    int hillPlayer = -1;
     std::vector<int> deadAnts;
 
-    Square()
-    {
-        isVisible = isWater = isHill = isFood = 0;
-        ant = hillPlayer = -1;
-    };
+#pragma endregion
 
-    //resets the information for the square except water information
+#pragma region Functions
+    Square() = default;
+
+    // Resets the information for the square except water information
     void reset()
     {
-        isVisible = 0;
-        isHill = 0;
-        isFood = 0;
-        ant = hillPlayer = -1;
+        isVisible = false;
+        isHill = false;
+        isFood = false;
+        hillPlayer = -1;
+        ant = -1;
         deadAnts.clear();
-    };
+    }
+
+#pragma endregion
 };
 
 #endif //SQUARE_H_

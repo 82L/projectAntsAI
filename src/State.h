@@ -19,51 +19,101 @@
 /*
     constants
 */
-const int TDIRECTIONS = 4;
-const char CDIRECTIONS[4] = {'N', 'E', 'S', 'W'};
-const int DIRECTIONS[4][2] = { {-1, 0}, {0, 1}, {1, 0}, {0, -1} };      //{N, E, S, W}
+constexpr int T_DIRECTIONS = 4;
+constexpr char C_DIRECTIONS[4] = {'N', 'E', 'S', 'W'};
+constexpr int DIRECTIONS[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; //{N, E, S, W}
 
 /*
-    struct to store current state information
+    struct to store current state of the game information
 */
 struct State
 {
-    /*
-        Variables
-    */
-    int rows, cols,
-        turn, turns,
-        noPlayers;
-    double attackradius, spawnradius, viewradius;
-    double loadtime, turntime;
-    std::vector<double> scores;
-    bool gameover;
-    int64_t seed;
+#pragma region Members
 
-    std::vector<std::vector<Square> > grid;
-    std::vector<Location> myAnts, enemyAnts, myHills, enemyHills, food;
+    int rowCount;
+    int colCount;
+
+    int currentTurn;
+    int turnsCount;
+    int noPlayers;
+
+    double attackRadius;
+    double spawnRadius;
+    double viewRadius;
+
+    double loadTime;
+    double turnTime;
+
+    std::vector<double> scores;
+    bool isGameOver;
+    int64_t playerSeed;
+
+    std::vector<std::vector<Square>> grid;
+
+    std::vector<Location> myAnts;
+    std::vector<Location> enemyAnts;
+    std::vector<Location> myHills;
+    std::vector<Location> enemyHills;
+    std::vector<Location> foods;
 
     Timer timer;
     Bug bug;
 
-    /*
-        Functions
-    */
+#pragma endregion
+
+#pragma region Functions
+
     State();
     ~State();
 
-    void setup();
-    void reset();
+    void Setup();
 
-    void makeMove(const Location &loc, int direction);
+    /**
+     * \brief Resets all non-water squares to land and clears the bots ant vector
+     */
+    void Reset();
 
-    double distance(const Location &loc1, const Location &loc2);
-    Location getLocation(const Location &startLoc, int direction);
+    /**
+     * \brief Outputs move information to the engine
+     * \param antLocation Location of the ant
+     * \param direction Direction we want the ant to move
+     */
+    void MakeAntMove(const Location& antLocation, int direction);
 
-    void updateVisionInformation();
+    /*
+        This function will update update the lastSeen value for any squares currently
+        visible by one of your live ants.
+    
+        BE VERY CAREFUL IF YOU ARE GOING TO TRY AND MAKE THIS FUNCTION MORE EFFICIENT,
+        THE OBVIOUS WAY OF TRYING TO IMPROVE IT BREAKS USING THE EUCLIDEAN METRIC, FOR
+        A CORRECT MORE EFFICIENT IMPLEMENTATION, TAKE A LOOK AT THE GET_VISION FUNCTION
+        IN ANTS.PY ON THE CONTESTS GITHUB PAGE.
+    */
+    void UpdateVisionInformation();
+
+    /**
+     * \return The euclidean distance between two locations with the edges wrapped
+     */
+    double GetDistance(const Location& location1, const Location& location2);
+
+    /**
+     * \brief Get the location adjacent of an other location in a specific direction with the edges wrapped
+     * \return The new location
+     */
+    Location GetLocation(const Location& startLocation, int direction);
+
+#pragma  endregion
 };
 
-std::ostream& operator<<(std::ostream &os, const State &state);
-std::istream& operator>>(std::istream &is, State &state);
+/*
+    This is the output function for a state. It will add a char map
+    representation of the state to the output stream passed to it.
+
+    For example, you might call "cout << state << endl;"
+*/
+std::ostream& operator<<(std::ostream& os, const State& state);
+
+// Input function
+std::istream& operator>>(std::istream& is, State& state);
 
 #endif //STATE_H_

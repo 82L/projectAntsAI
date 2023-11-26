@@ -3,19 +3,23 @@
 
 #include "State.h"
 
-/*
-    This struct represents your bot in the game of Ants
-*/
+/**
+    \brief This struct represents your bot in the game of Ants
+**/
 struct Bot
 {
-    State state;
+    State currentState;
 
-    Bot();
+    Bot() = default;
 
-    void playGame();    //plays a single game of Ants
+    // Plays a single game of Ants
+    void PlayGame();
 
-    void makeMoves();   //makes moves for a single turn
-    void endTurn();     //indicates to the engine that it has made its moves
+    // Makes moves for a single turn
+    void MakeMoves();
+
+    // Indicates to the engine that it has made its moves
+    void EndTurn();
 };
 
 #endif //BOT_H_
