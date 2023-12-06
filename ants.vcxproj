@@ -51,9 +51,9 @@
         </Link>
     </ItemDefinitionGroup>
     <ItemGroup>
-        <ClCompile Include="src\Bot.cc"/>
-        <ClCompile Include="src\MyBot.cc"/>
-        <ClCompile Include="src\State.cc"/>
+        <ClCompile Include="src\Bot.cpp" />
+        <ClCompile Include="src\MyBot.cpp" />
+        <ClCompile Include="src\State.cpp" />
     </ItemGroup>
     <ItemGroup>
         <ClInclude Include="src\Bot.h"/>

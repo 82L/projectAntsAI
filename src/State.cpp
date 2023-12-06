@@ -204,7 +204,7 @@ istream& operator>>(istream& is, State& state)
                 else
                     state.enemyAnts.push_back(Location(row, col));
             }
-            else if (inputType == "d") // Fead ant square
+            else if (inputType == "d") // Dead ant square
             {
                 is >> row >> col >> player;
                 state.grid[row][col].deadAnts.push_back(player);
