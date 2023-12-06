@@ -41,7 +41,7 @@ void State::MakeAntMove(const Location& antLocation, int direction)
     grid[antLocation.row][antLocation.col].ant = -1;
 }
 
-double State::GetDistance(const Location& location1, const Location& location2)
+double State::GetWrappedDistance(const Location& location1, const Location& location2)
 {
     int d1 = abs(location1.row - location2.row);
     int d2 = abs(location1.col - location2.col);
@@ -80,7 +80,7 @@ void State::UpdateVisionInformation()
             {
                 nLoc = GetLocation(cLoc, d);
 
-                if (!visited[nLoc.row][nLoc.col] && GetDistance(sLoc, nLoc) <= viewRadius)
+                if (!visited[nLoc.row][nLoc.col] && GetWrappedDistance(sLoc, nLoc) <= viewRadius)
                 {
                     grid[nLoc.row][nLoc.col].isVisible = true;
                     locQueue.push(nLoc);

@@ -94,7 +94,7 @@ struct State
     /**
      * \return The euclidean distance between two locations with the edges wrapped
      */
-    double GetDistance(const Location& location1, const Location& location2);
+    double GetWrappedDistance(const Location& location1, const Location& location2);
 
     /**
      * \brief Get the location adjacent of an other location in a specific direction with the edges wrapped
