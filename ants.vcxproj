@@ -51,12 +51,16 @@
         </Link>
     </ItemDefinitionGroup>
     <ItemGroup>
+        <ClCompile Include="src\AStar.cpp" />
         <ClCompile Include="src\Bot.cpp" />
+        <ClCompile Include="src\FloodFill.cpp" />
         <ClCompile Include="src\MyBot.cpp" />
         <ClCompile Include="src\State.cpp" />
     </ItemGroup>
     <ItemGroup>
+        <ClInclude Include="src\AStar.h" />
         <ClInclude Include="src\Bot.h"/>
+        <ClInclude Include="src\FloodFill.h" />
         <ClInclude Include="src\Location.h"/>
         <ClInclude Include="src\Square.h"/>
         <ClInclude Include="src\State.h"/>
