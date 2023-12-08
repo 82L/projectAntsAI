@@ -32,9 +32,9 @@ void State::Reset()
                 grid[row][col].reset();
 }
 
-void State::MakeAntMove(const Location& antLocation, int direction)
+void State::MakeAntMove(const Location& antLocation, DIRECTION direction)
 {
-    cout << "o " << antLocation.row << " " << antLocation.col << " " << C_DIRECTIONS[direction] << endl;
+    cout << "o " << antLocation.row << " " << antLocation.col << " " << direction << endl;
 
     Location nLoc = GetLocation(antLocation, direction);
     grid[nLoc.row][nLoc.col].ant = grid[antLocation.row][antLocation.col].ant;
@@ -51,10 +51,11 @@ double State::GetWrappedDistance(const Location& location1, const Location& loca
     return sqrt(dr * dr + dc * dc);
 }
 
-Location State::GetLocation(const Location& startLocation, int direction)
+Location State::GetLocation(const Location& startLocation, DIRECTION direction)
 {
-    return Location((startLocation.row + DIRECTIONS[direction][0] + rowCount) % rowCount,
-                    (startLocation.col + DIRECTIONS[direction][1] + colCount) % colCount);
+    DirectionData data{direction};
+    return Location((startLocation.row + data.y + rowCount) % rowCount,
+                    (startLocation.col + data.x + colCount) % colCount);
 }
 
 void State::UpdateVisionInformation()
@@ -76,9 +77,9 @@ void State::UpdateVisionInformation()
             cLoc = locQueue.front();
             locQueue.pop();
 
-            for (int d = 0; d < T_DIRECTIONS; d++)
+            for (const auto& direcion: DIRECTIONS)
             {
-                nLoc = GetLocation(cLoc, d);
+                nLoc = GetLocation(cLoc, direcion);
 
                 if (!visited[nLoc.row][nLoc.col] && GetWrappedDistance(sLoc, nLoc) <= viewRadius)
                 {

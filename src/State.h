@@ -15,13 +15,7 @@
 #include "Bug.h"
 #include "Square.h"
 #include "Location.h"
-
-/*
-    constants
-*/
-constexpr int T_DIRECTIONS = 4;
-constexpr char C_DIRECTIONS[4] = {'N', 'E', 'S', 'W'};
-constexpr int DIRECTIONS[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; //{N, E, S, W}
+#include "Direction.h"
 
 /*
     struct to store current state of the game information
@@ -78,8 +72,9 @@ struct State
      * \param antLocation Location of the ant
      * \param direction Direction we want the ant to move
      */
-    void MakeAntMove(const Location& antLocation, int direction);
 
+    void MakeAntMove(const Location& antLocation, DIRECTION direction);
+    
     /*
         This function will update update the lastSeen value for any squares currently
         visible by one of your live ants.
@@ -100,7 +95,7 @@ struct State
      * \brief Get the location adjacent of an other location in a specific direction with the edges wrapped
      * \return The new location
      */
-    Location GetLocation(const Location& startLocation, int direction);
+    Location GetLocation(const Location& startLocation, DIRECTION direction);
 
 #pragma  endregion
 };

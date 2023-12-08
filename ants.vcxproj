@@ -59,6 +59,7 @@
     <ItemGroup>
         <ClInclude Include="src\AStar.h" />
         <ClInclude Include="src\Bot.h"/>
+        <ClInclude Include="src\Direction.h" />
         <ClInclude Include="src\Location.h"/>
         <ClInclude Include="src\Square.h"/>
         <ClInclude Include="src\State.h"/>

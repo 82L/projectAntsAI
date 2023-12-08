@@ -26,17 +26,17 @@ void Bot::MakeMoves()
     // Picks out moves for each ant
     for (int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
-        for (int d = 0; d < T_DIRECTIONS; d++)
+        for (const auto& direction : DIRECTIONS)
         {
-            const Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], d);
+             Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
 
-            if (!currentState.grid[antCheckLocation.row][antCheckLocation.col].isWater)
+            if (!currentState.grid[antCheckLocation.row][antCheckLocation.col].isWater )
             {
-                currentState.MakeAntMove(currentState.myAnts[ant], 1);
+                currentState.MakeAntMove(currentState.myAnts[ant], DIRECTION::E);
             }
             else
             {
-                currentState.MakeAntMove(currentState.myAnts[ant], 2);
+                currentState.MakeAntMove(currentState.myAnts[ant], DIRECTION::S);
             }
         }
     }

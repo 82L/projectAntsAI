@@ -16,13 +16,13 @@ struct Location
     }
 
     /** 
-     * \param r row
-     * \param c column
+     * \param y row
+     * \param x column
      */
-    Location(const int r, const int c)
+    Location(const int y, const int x)
     {
-        row = r;
-        col = c;
+        row = y;
+        col = x;
     }
 };
 
