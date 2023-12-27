@@ -52,12 +52,14 @@
     </ItemDefinitionGroup>
     <ItemGroup>
         <ClCompile Include="src\AStar.cpp" />
+        <ClCompile Include="src\AStarNode.cpp" />
         <ClCompile Include="src\Bot.cpp" />
         <ClCompile Include="src\MyBot.cpp" />
         <ClCompile Include="src\State.cpp" />
     </ItemGroup>
     <ItemGroup>
         <ClInclude Include="src\AStar.h" />
+        <ClInclude Include="src\AStarNode.h" />
         <ClInclude Include="src\Bot.h"/>
         <ClInclude Include="src\Direction.h" />
         <ClInclude Include="src\Location.h"/>

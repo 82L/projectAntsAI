@@ -2,11 +2,16 @@
 
 using namespace std;
 
+Bot::Bot(): aStarResolver(nullptr)
+{
+}
+
 void Bot::PlayGame()
 {
     // Reads the game parameters and sets up
     cin >> currentState;
     currentState.Setup();
+    aStarResolver = AStar(&currentState);
     EndTurn();
 
     // Continues making moves while the game is not over

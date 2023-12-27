@@ -24,6 +24,12 @@ struct Location
         row = y;
         col = x;
     }
+    
+    bool operator==(const Location& otherLocation) const
+    {
+        return col == otherLocation.col && row == otherLocation.row;
+    }
+
 };
 
 #endif //LOCATION_H_

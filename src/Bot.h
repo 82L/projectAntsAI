@@ -9,8 +9,8 @@
 struct Bot
 {
     State currentState;
-
-    Bot() = default;
+    AStar aStarResolver;
+    Bot();
 
     // Plays a single game of Ants
     void PlayGame();
