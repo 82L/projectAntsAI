@@ -18,7 +18,7 @@ class AStar
      * \param endLocation End location that must be found
      * \return Estimated cost to go from one another
      */
-    double HeuristicLocationCalculator(Location *givenLocation, Location *endLocation);
+    double HeuristicLocationCalculator(const Location *givenLocation, const Location *endLocation) const;
 
     /**
      * \brief Check neighbors from baseLocation, and add them to uncheckedNodes if they're not already in it or
@@ -28,14 +28,14 @@ class AStar
      * \param checkedNodes List of nodes who were checked
      */
     void AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> *uncheckedNodes,
-                            std::vector<AStarNode*> *checkedNodes);
+                            std::vector<AStarNode*> *checkedNodes) const;
 
     /**
      * \brief Create path from linked AStarNodes
      * \param endNode last node used 
      * \return path to the location
      */
-    static std::vector<Location>* CreatePath(AStarNode* endNode);
+    static std::vector<Location>* CreatePath(const AStarNode* endNode);
 
     /**
      * \brief Get NextNode from list
@@ -43,7 +43,7 @@ class AStar
      * \param endLocation Location targeted
      * \return the next node to be checked
      */
-    AStarNode* GetNextNode(std::vector<AStarNode*> *uncheckedNodes, Location *endLocation);
+    AStarNode* GetNextNode(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const;
 
     /**
      * \brief Get The Best Node out of the unchecked node list
@@ -51,7 +51,7 @@ class AStar
      * \param endLocation end location targeted
      * \return the node to be processed next
      */
-    AStarNode* GetBestNodeForPath(std::vector<AStarNode*> *uncheckedNodes, Location *endLocation);
+    AStarNode* GetBestNodeForPath(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const;
 
 
 public:
@@ -68,7 +68,7 @@ public:
      * \param endLocation Location where we want to go
      * \return The path to go from startingLocation to endLocation
      */
-    std::vector<Location>* GetPathInstructions(Location startLocation, Location endLocation);
+    std::vector<Location>* GetPathInstructions(Location startLocation, Location endLocation) const;
 };
 
 #endif // ASTAR_H_

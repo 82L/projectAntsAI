@@ -7,12 +7,12 @@ AStar::AStar(State *state)
     _gameState = state;
 }
 
-std::vector<Location>* AStar::GetPathInstructions( Location startLocation, Location endLocation)
+std::vector<Location>* AStar::GetPathInstructions( Location startLocation, Location endLocation) const
 {
     auto *uncheckedNodes = new std::vector<AStarNode*>();
     uncheckedNodes->push_back(new AStarNode(startLocation, nullptr, 0));
     std::vector<AStarNode*> *checkedNodes = {};
-    AStarNode* endNode = nullptr;
+    const AStarNode* endNode = nullptr;
     while(!uncheckedNodes->empty())
     {
         AStarNode* nodeToCheck = GetNextNode(uncheckedNodes, &endLocation);
@@ -37,25 +37,25 @@ std::vector<Location>* AStar::GetPathInstructions( Location startLocation, Locat
     //do the path
 }
 
-double AStar::HeuristicLocationCalculator( Location* givenLocation,  Location* endLocation) 
+double AStar::HeuristicLocationCalculator(const Location* givenLocation, const Location* endLocation) const
 {
    return _gameState->GetWrappedDistance(*givenLocation, *endLocation);
 }
 
-void AStar::AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> *uncheckedNodes,  std::vector<AStarNode*> *checkedNodes)
+void AStar::AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> *uncheckedNodes,  std::vector<AStarNode*> *checkedNodes) const
 {
-    for(int i = 0; i < T_DIRECTIONS; i++)
+    for(const auto& direction : DIRECTIONS)
     {
-        Location foundLocation = _gameState->GetLocation(baseLocation->location, i);
+        Location foundLocation = _gameState->GetLocation(baseLocation->location, direction);
         if(!_gameState->grid[foundLocation.row][foundLocation.col].isWater && _gameState->grid[foundLocation.row][foundLocation.col].isVisible)
         {
-            if(std::find_if(checkedNodes->begin(), checkedNodes->end(), [&](AStarNode *node)
+            if(std::find_if(checkedNodes->begin(), checkedNodes->end(), [&](const AStarNode *node)
             {
                 return node->location == foundLocation;
             }) == checkedNodes->end())
             {
                 auto newNode = new AStarNode(foundLocation,baseLocation, baseLocation->cost + 1);
-                auto foundNode = find_if( uncheckedNodes->begin(), uncheckedNodes->end(), [&](AStarNode *x)
+                auto foundNode = find_if( uncheckedNodes->begin(), uncheckedNodes->end(), [&](const AStarNode *x)
                 {
                     return x->location == newNode->location;
                 });
@@ -79,10 +79,10 @@ void AStar::AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> 
     }
 }
 
-std::vector<Location>* AStar::CreatePath(AStarNode *endNode)
+std::vector<Location>* AStar::CreatePath(const AStarNode *endNode)
 {
-    AStarNode* currentNode = endNode;
-    auto path = new std::vector<Location>();
+    const AStarNode* currentNode = endNode;
+    const auto path = new std::vector<Location>();
     do {
         path->push_back(currentNode->location);
         currentNode = currentNode->previousNode;
@@ -91,10 +91,10 @@ std::vector<Location>* AStar::CreatePath(AStarNode *endNode)
     return path;
 }
 
-AStarNode* AStar::GetNextNode(std::vector<AStarNode*> *uncheckedNodes, Location *endLocation) 
+AStarNode* AStar::GetNextNode(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const
 {
-    auto endNode = std::find_if(uncheckedNodes->begin(), uncheckedNodes->end(),
-                                      [&]( AStarNode* x)
+    const auto endNode = std::find_if(uncheckedNodes->begin(), uncheckedNodes->end(),
+                                      [&](const AStarNode* x)
                                       {
                                           return x->location == *endLocation;
                                       });
@@ -106,10 +106,10 @@ AStarNode* AStar::GetNextNode(std::vector<AStarNode*> *uncheckedNodes, Location 
 }
 
 
-AStarNode* AStar::GetBestNodeForPath(std::vector<AStarNode*> *uncheckedNodes, Location *endLocation) 
+AStarNode* AStar::GetBestNodeForPath(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const
 {
-    auto returnNode  = std::min_element(uncheckedNodes->begin(), uncheckedNodes->end(),
-                                              [&](AStarNode* node1, AStarNode* node2)
+    const auto returnNode  = std::min_element(uncheckedNodes->begin(), uncheckedNodes->end(),
+                                              [&](const AStarNode* node1, const AStarNode* node2)
                                               {
                                                   return (node1->cost + HeuristicLocationCalculator(&node1->location, endLocation))
                                                       <  (node2->cost + HeuristicLocationCalculator(&node2->location, endLocation));

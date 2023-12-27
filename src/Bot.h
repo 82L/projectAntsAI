@@ -1,6 +1,7 @@
 #ifndef BOT_H_
 #define BOT_H_
 
+#include "AStar.h"
 #include "State.h"
 
 /**
