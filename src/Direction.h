@@ -30,7 +30,7 @@ struct DirectionData
          *
          *   are translated to coordinates of type
          * 
-         *   X-------------> X
+         *   0-------------> X
          *   |
          *   |
          *   |
