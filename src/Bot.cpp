@@ -1,5 +1,5 @@
 #include "Bot.h"
-
+d#define DEBUG
 using namespace std;
 
 Bot::Bot(): aStarResolver(nullptr)

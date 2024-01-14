@@ -12,6 +12,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CA521A67-2C9C-4DCC-9520-6DCA8AFAA795}.Release|x64.ActiveCfg = Release|x64
 		{CA521A67-2C9C-4DCC-9520-6DCA8AFAA795}.Release|x64.Build.0 = Release|x64
+		{CA521A67-2C9C-4DCC-9520-6DCA8AFAA795}.Release|x64.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
