@@ -34,7 +34,7 @@ void Bot::MakeMoves()
     {
         StartLogic();
     }
-
+    CleanVectors();
     currentState.bug << "time taken: " << currentState.timer.GetDuration() << "ms" << std::endl << std::endl;
 }
 
@@ -63,7 +63,7 @@ void Bot::StartLogic()
         // if there is no current path
         if(currentAnt->savedPath == nullptr || currentAnt->savedPath->empty())
         {
-            currentState.bug << "Finding path for  number " << ant << "\n";
+            currentState.bug << "Finding path for number " << ant << "\n";
             std::vector<DIRECTION> *savedPath = nullptr;
             Location foodTracked = currentState.foods[0];
             for(auto food : currentState.foods)
@@ -82,7 +82,7 @@ void Bot::StartLogic()
             }
             if(savedPath != nullptr)
             {
-                currentState.bug << "path found ant" << "\n";
+                currentState.bug << "Path found number " << ant << "\n";
                 foodsPursued.push_back(foodTracked);
                 currentAnt->currentJob = JOB::CollectingFood;
                 foodGatherers++;
@@ -91,7 +91,7 @@ void Bot::StartLogic()
             }
             else
             {
-                currentState.bug << "No found path for  number " << ant << "\n";
+                currentState.bug << "No found path for number " << ant << "\n";
                 for(const auto direction : DIRECTIONS)
                 {
                     Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
@@ -119,24 +119,14 @@ void Bot::AntMakeMove(Ant *currentAnt, int antNumber)
     if(CheckLocationValidity(antCheckLocation))
     {
         currentState.MakeAntMove(currentState.myAnts[antNumber], currentAnt->savedPath->back());
+        currentAnt->previousLocation = currentAnt->currentLocation;
         currentAnt->currentLocation = antCheckLocation;
         currentAnt->savedPath->pop_back();
         currentAnt->hasWaited = false;
         if(currentAnt->savedPath->empty())
         {
-            foodsPursued.erase(std::find_if(foodsPursued.begin(),
-                                            foodsPursued.end(),
-                                            [&](Location x)
-                                            {
-                                                return x == antCheckLocation;
-                                            }));
-            if(currentAnt->savedPath->empty())
-            {
-                UpdateStats(currentAnt);
-                currentAnt->currentJob = UnEmployed;
-                
-            }
-
+            UpdateStats(currentAnt);
+            currentAnt->currentJob = UnEmployed;
         }
     }
     else
@@ -148,12 +138,6 @@ void Bot::AntMakeMove(Ant *currentAnt, int antNumber)
         else
         {
             currentAnt->savedPath->clear();
-            foodsPursued.erase(std::find_if(foodsPursued.begin(),
-                                         foodsPursued.end(),
-                                         [&](Location x)
-                                         {
-                                             return x == antCheckLocation;
-                                         }));
             UpdateStats(currentAnt);
             currentAnt->currentJob = UnEmployed;
             currentAnt->hasWaited = false;
@@ -188,7 +172,13 @@ bool Bot::CheckLocationValidity(Location toCheck)
 {
     return currentState.grid[toCheck.row][toCheck.col].CheckSquareIsValidForMove();
 }
-
+void Bot::CleanVectors()
+{
+    foodsPursued.erase(std::remove_if(foodsPursued.begin(), foodsPursued.end(), [&](Location location)
+    {
+        return !currentState.grid[location.row][location.col].isFood;
+    }), foodsPursued.end());
+}
 void Bot::EndTurn()
 {
     if(currentState.currentTurn > 0)

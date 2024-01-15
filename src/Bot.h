@@ -31,6 +31,7 @@ struct Bot
     void AntMakeMove(Ant *currentAnt, int antNumber);
     void UpdateStats(Ant *currentAnt);
     bool CheckLocationValidity(Location toCheck);
+    void CleanVectors();
 
     // Indicates to the engine that it has made its moves
     void EndTurn();

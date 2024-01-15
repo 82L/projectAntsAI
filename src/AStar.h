@@ -38,7 +38,6 @@ class AStar
      * \param endNode last node used 
      * \return path to the location
      */
-    static std::vector<Location>* CreatePath(const AStarNode *endNode);
     static std::vector<DIRECTION>* CreatePathDirections(const AStarNode *endNode);
 
     /**
@@ -72,7 +71,6 @@ public:
      * \param endLocation Location where we want to go
      * \return The path to go from startingLocation to endLocation
      */
-    std::vector<Location>* GetPathInstructions(Location startLocation, Location endLocation) const;
     std::vector<DIRECTION>* GetPathInstructionsDirection(Location startLocation, Location endLocation) const;
 };
 
