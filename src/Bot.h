@@ -15,6 +15,11 @@ struct Bot
     AStar * aStarResolver;
     std::vector<Ant> trackedAnts {};
     std::vector<Location> foodsPursued {};
+    int foodGatherers = 0;
+    int attackersAnt = 0;
+    int attackersHill = 0;
+    int explorers = 0;
+    
     Bot();
 
     // Plays a single game of Ants
