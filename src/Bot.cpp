@@ -32,13 +32,13 @@ void Bot::MakeMoves()
     // Picks out moves for each ant
     for (int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
-        auto trackedAnt = std::find_if(trackedAnts.begin(), trackedAnts.end(), [&](const Ant* x)
+        auto trackedAnt = std::find_if(trackedAnts.begin(), trackedAnts.end(), [&](Ant x)
         {
-            return x->currentLocation == currentState.myAnts[ant];
+            return x.currentLocation == currentState.myAnts[ant];
         });
         if(currentState.currentTurn < 2 && ant == 0 && trackedAnt == trackedAnts.end())
         {
-            Ant currentAnt = ant();
+            Ant currentAnt = Ant();
             currentAnt.currentLocation = currentState.myAnts[ant];
             std::stack<DIRECTION> *savedPath = nullptr;
             Location foodTracked;

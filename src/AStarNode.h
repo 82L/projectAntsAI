@@ -1,8 +1,9 @@
 ﻿#ifndef ASTARNODE_H_
 #define ASTARNODE_H_
 #pragma once
-#include "Direction.h"
 #include "Location.h"
+
+enum class DIRECTION;
 
 struct AStarNode
 {

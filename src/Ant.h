@@ -3,13 +3,18 @@
 #pragma once
 #include <stack>
 
-#include "Direction.h"
 #include "Location.h"
+
+enum class DIRECTION;
 
 struct Ant
 {
     std::stack<DIRECTION>* savedPath;
     Location currentLocation;
     Location previousLocation;
+    Ant()
+    {
+        
+    }
 };
 #endif //ANT_H_
