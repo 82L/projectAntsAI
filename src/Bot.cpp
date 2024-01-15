@@ -29,6 +29,7 @@ void Bot::PlayGame()
 void Bot::MakeMoves()
 {
     currentState.bug << "turn " << currentState.currentTurn << ":" << "\n";
+    currentState.bug << currentState << "\n";
     // Picks out moves for each ant
     for (int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
@@ -43,7 +44,6 @@ void Bot::MakeMoves()
             currentAnt.currentLocation = currentState.myAnts[ant];
             std::stack<DIRECTION> *savedPath = nullptr;
             Location foodTracked = currentState.foods[0];
-            currentState.bug << "checking food" << "\n";
             for(auto food : currentState.foods)
             {
                 if(std::find(foodsPursued.begin(), foodsPursued.end(), food) == foodsPursued.end())
@@ -106,8 +106,7 @@ void Bot::MakeMoves()
 }
 bool Bot::CheckLocationValidity(Location toCheck)
 {
-    const Square* square = &currentState.grid[toCheck.row][toCheck.col];
-    return !square->isWater && !square->isFood && square->ant == -1 && (!square->isHill || square->hillPlayer != 0);
+    return currentState.grid[toCheck.row][toCheck.col].CheckSquareIsValidForMove();
 }
 void Bot::EndTurn()
 {

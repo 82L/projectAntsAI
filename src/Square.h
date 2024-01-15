@@ -36,6 +36,15 @@ struct Square
         deadAnts.clear();
     }
 
+    bool CheckSquareIsValidForMove()
+    {
+        return !this->isWater && !this->isFood && this->ant == -1 && (!this->isHill || this->hillPlayer != 0);
+    }
+    bool CheckSquareIsValidCalculation()
+    {
+        return !this->isWater && this->isVisible && !this->isFood && (!this->isHill || this->hillPlayer != 0);
+    }
+
 #pragma endregion
 };
 

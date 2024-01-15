@@ -84,7 +84,7 @@ void AStar::AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> 
     for(const auto& direction : DIRECTIONS)
     {
         Location foundLocation = _gameState->GetLocation(baseLocation->location, direction);
-        if(!_gameState->grid[foundLocation.row][foundLocation.col].isWater && _gameState->grid[foundLocation.row][foundLocation.col].isVisible)
+        if(_gameState->grid[foundLocation.row][foundLocation.col].CheckSquareIsValidCalculation())
         {
             if(std::find_if(checkedNodes->begin(), checkedNodes->end(), [&](const AStarNode *node)
             {
