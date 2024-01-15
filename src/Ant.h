@@ -2,6 +2,7 @@
 #define ANT_H_
 #pragma once
 #include <stack>
+#include <vector>
 
 #include "Location.h"
 
@@ -9,20 +10,19 @@ enum class DIRECTION;
 
 enum JOB
 {
-    CollectingFood = "Collecting Food",
-    Exploring = "Exploring",
-    AttackingEnemy = "Attacking Enemy",
-    AttackingHill = "Attacking Hill",
+    UnEmployed = 0,
+    CollectingFood = 1,
+    Exploring = 2,
+    AttackingEnemy = 3,
+    AttackingHill = 4,
 };
 struct Ant
 {
-    std::stack<DIRECTION>* savedPath;
+    std::vector<DIRECTION>* savedPath;
     Location currentLocation;
     Location previousLocation;
-    JOB currentJob;
-    Ant()
-    {
-        
-    }
+    JOB currentJob = JOB::UnEmployed;
+    bool hasWaited = false;
+    Ant() = default;
 };
 #endif //ANT_H_

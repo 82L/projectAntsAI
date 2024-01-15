@@ -38,8 +38,8 @@ class AStar
      * \param endNode last node used 
      * \return path to the location
      */
-    static std::stack<Location>* CreatePath(const AStarNode *endNode);
-    static std::stack<DIRECTION>* CreatePathDirections(const AStarNode *endNode);
+    static std::vector<Location>* CreatePath(const AStarNode *endNode);
+    static std::vector<DIRECTION>* CreatePathDirections(const AStarNode *endNode);
 
     /**
      * \brief Get NextNode from list
@@ -72,8 +72,8 @@ public:
      * \param endLocation Location where we want to go
      * \return The path to go from startingLocation to endLocation
      */
-    std::stack<Location>* GetPathInstructions(Location startLocation, Location endLocation) const;
-    std::stack<DIRECTION>* GetPathInstructionsDirection(Location startLocation, Location endLocation) const;
+    std::vector<Location>* GetPathInstructions(Location startLocation, Location endLocation) const;
+    std::vector<DIRECTION>* GetPathInstructionsDirection(Location startLocation, Location endLocation) const;
 };
 
 #endif // ASTAR_H_

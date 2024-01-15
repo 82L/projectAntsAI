@@ -42,7 +42,7 @@ struct Square
     }
     bool CheckSquareIsValidCalculation()
     {
-        return !this->isWater && this->isVisible && !this->isFood && (!this->isHill || this->hillPlayer != 0);
+        return !this->isWater && this->isVisible && (!this->isHill || this->hillPlayer != 0);
     }
 
 #pragma endregion

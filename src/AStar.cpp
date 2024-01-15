@@ -6,7 +6,7 @@ AStar::AStar(State *state)
     _gameState = state;
 }
 
-std::stack<Location>* AStar::GetPathInstructions(Location startLocation, Location endLocation) const
+std::vector<Location>* AStar::GetPathInstructions(Location startLocation, Location endLocation) const
 {
     auto *uncheckedNodes = new std::vector<AStarNode*>();
     uncheckedNodes->push_back(new AStarNode(startLocation, nullptr, 0, DIRECTION::N));
@@ -27,7 +27,7 @@ std::stack<Location>* AStar::GetPathInstructions(Location startLocation, Locatio
     }
     if(endNode != nullptr)
     {
-        std::stack<Location>* path = CreatePath(endNode);
+        std::vector<Location>* path = CreatePath(endNode);
         uncheckedNodes->clear();
         checkedNodes->clear();
         return path;
@@ -36,16 +36,13 @@ std::stack<Location>* AStar::GetPathInstructions(Location startLocation, Locatio
     //do the path
 }
 
-std::stack<DIRECTION>* AStar::GetPathInstructionsDirection( Location startLocation, Location endLocation) const
+std::vector<DIRECTION>* AStar::GetPathInstructionsDirection(Location startLocation, Location endLocation) const
 {
-    // _gameState->bug << "test" << "\n";
-    // _gameState->bug << _gameState << "\n";
     std::vector<AStarNode*> *uncheckedNodes = new std::vector<AStarNode *>();
     AStarNode* startNode = new AStarNode(startLocation, nullptr, 0, DIRECTION::N);
     uncheckedNodes->push_back(startNode);
     std::vector<AStarNode*> *checkedNodes = new std::vector<AStarNode *>();
     const AStarNode* endNode = nullptr;
-    _gameState->bug << "test" << "\n";
     while(!uncheckedNodes->empty() && endNode == nullptr)
     {
         AStarNode* nodeToCheck = GetNextNode(uncheckedNodes, &endLocation);
@@ -65,7 +62,7 @@ std::stack<DIRECTION>* AStar::GetPathInstructionsDirection( Location startLocati
 
     if(endNode != nullptr)
     {
-        std::stack<DIRECTION>* path = CreatePathDirections(endNode);
+        std::vector<DIRECTION>* path = CreatePathDirections(endNode);
         uncheckedNodes->clear();
         checkedNodes->clear();
         return path;
@@ -116,23 +113,23 @@ void AStar::AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> 
     }
 }
 
-std::stack<Location>* AStar::CreatePath(const AStarNode *endNode)
+std::vector<Location>* AStar::CreatePath(const AStarNode *endNode)
 {
     const AStarNode* currentNode = endNode;
-    auto path = new std::stack<Location>();
+    auto path = new std::vector<Location>();
     do {
-        path->push(currentNode->location);
+        path->push_back(currentNode->location);
         currentNode = currentNode->previousNode;
     } while(currentNode->previousNode != nullptr);
     return path;
 }
 
-std::stack<DIRECTION>* AStar::CreatePathDirections(const AStarNode *endNode)
+std::vector<DIRECTION>* AStar::CreatePathDirections(const AStarNode *endNode)
 {
     const AStarNode* currentNode = endNode;
-    auto path = new std::stack<DIRECTION>();
+    auto path = new std::vector<DIRECTION>();
     do {
-        path->push(currentNode->direction);
+        path->push_back(currentNode->direction);
         currentNode = currentNode->previousNode;
     } while(currentNode->previousNode != nullptr);
 

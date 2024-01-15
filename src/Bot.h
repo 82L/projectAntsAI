@@ -13,7 +13,7 @@ struct Bot
 {
     State currentState;
     AStar * aStarResolver;
-    std::vector<Ant> trackedAnts {};
+    std::vector<Ant*> trackedAnts {};
     std::vector<Location> foodsPursued {};
     int foodGatherers = 0;
     int attackersAnt = 0;
@@ -27,6 +27,9 @@ struct Bot
 
     // Makes moves for a single turn
     void MakeMoves();
+    void StartLogic();
+    void AntMakeMove(Ant *currentAnt, int antNumber);
+    void UpdateStats(Ant *currentAnt);
     bool CheckLocationValidity(Location toCheck);
 
     // Indicates to the engine that it has made its moves
