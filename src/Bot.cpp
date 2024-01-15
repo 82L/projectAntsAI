@@ -3,7 +3,7 @@
 
 // using namespace std;
 
-Bot::Bot(): aStarResolver(nullptr)
+Bot::Bot()
 {
 }
 
@@ -12,7 +12,9 @@ void Bot::PlayGame()
     // Reads the game parameters and sets up
     std::cin >> currentState;
     currentState.Setup();
-    aStarResolver = AStar(&currentState);
+    currentState.bug << "Astar Creation" << "\n";
+    aStarResolver = new AStar(&currentState);
+    currentState.bug << "Astar Created" << "\n";
     EndTurn();
 
     // Continues making moves while the game is not over
@@ -27,8 +29,6 @@ void Bot::PlayGame()
 void Bot::MakeMoves()
 {
     currentState.bug << "turn " << currentState.currentTurn << ":" << "\n";
-    currentState.bug << currentState << "\n";
-
     // Picks out moves for each ant
     for (int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
@@ -36,35 +36,58 @@ void Bot::MakeMoves()
         {
             return x.currentLocation == currentState.myAnts[ant];
         });
-        if(currentState.currentTurn < 2 && ant == 0 && trackedAnt == trackedAnts.end())
+        if(ant == 0 && trackedAnt == trackedAnts.end())
         {
+            currentState.bug << "Finding path for ant" << "\n";
             Ant currentAnt = Ant();
             currentAnt.currentLocation = currentState.myAnts[ant];
             std::stack<DIRECTION> *savedPath = nullptr;
-            Location foodTracked;
+            Location foodTracked = currentState.foods[0];
+            currentState.bug << "checking food" << "\n";
             for(auto food : currentState.foods)
             {
                 if(std::find(foodsPursued.begin(), foodsPursued.end(), food) == foodsPursued.end())
                 {
-                    std::stack<DIRECTION> *path = aStarResolver.GetPathInstructionsDirection(currentState.myAnts[ant], food);
-                    if(savedPath == nullptr || savedPath->size() > path->size())
+                    std::stack<DIRECTION> *path = aStarResolver->GetPathInstructionsDirection(currentState.myAnts[ant], food);
+                    if(path != nullptr && (savedPath == nullptr || savedPath->size() > path->size()))
                     {
+                    //     currentState.bug << "path found ant" << "\n";
+                    //     
                         savedPath = path;
                         foodTracked = food;
                     }
                 }
             
             }
-            currentAnt.savedPath = savedPath;
-            foodsPursued.push_back(foodTracked);
-            Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], currentAnt.savedPath->top());
-            if (CheckLocationValidity(antCheckLocation))
+            if(savedPath!= nullptr)
             {
-                currentState.MakeAntMove(currentState.myAnts[ant], currentAnt.savedPath->top());
-                currentAnt.currentLocation=antCheckLocation;
-                currentAnt.savedPath->pop();
+                currentAnt.savedPath = savedPath;
+                foodsPursued.push_back(foodTracked);
+                Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], currentAnt.savedPath->top());
+                if (CheckLocationValidity(antCheckLocation))
+                {
+                    currentState.MakeAntMove(currentState.myAnts[ant], currentAnt.savedPath->top());
+                    currentAnt.currentLocation=antCheckLocation;
+                    currentAnt.savedPath->pop();
+                }
+                trackedAnts.push_back(currentAnt);
             }
-            trackedAnts.push_back(currentAnt);
+            else
+            {
+                for(const auto direction: DIRECTIONS)
+                {
+                    Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
+                    if (CheckLocationValidity(antCheckLocation))
+                    {
+                        currentState.MakeAntMove(currentState.myAnts[ant], direction);
+                        break;
+                    }
+
+                }
+            }
+           
+           
+           
     
         }
        else if(trackedAnt != trackedAnts.end() && !trackedAnt->savedPath->empty())
@@ -83,8 +106,8 @@ void Bot::MakeMoves()
 }
 bool Bot::CheckLocationValidity(Location toCheck)
 {
-    Square* square = &currentState.grid[toCheck.row][toCheck.col];
-    return !square->isWater && !square->isFood && square->ant != -1 && (!square->isHill || square->hillPlayer != 0);
+    const Square* square = &currentState.grid[toCheck.row][toCheck.col];
+    return !square->isWater && !square->isFood && square->ant == -1 && (!square->isHill || square->hillPlayer != 0);
 }
 void Bot::EndTurn()
 {

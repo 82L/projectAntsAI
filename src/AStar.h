@@ -47,7 +47,7 @@ class AStar
      * \param endLocation Location targeted
      * \return the next node to be checked
      */
-    AStarNode* GetNextNode(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const;
+    AStarNode* GetNextNode(std::vector<AStarNode *> *uncheckedNodes, Location *endLocation) const;
 
     /**
      * \brief Get The Best Node out of the unchecked node list

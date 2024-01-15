@@ -12,9 +12,9 @@
 struct Bot
 {
     State currentState;
-    AStar aStarResolver;
-    std::vector<Ant> trackedAnts;
-    std::vector<Location> foodsPursued;
+    AStar * aStarResolver;
+    std::vector<Ant> trackedAnts {};
+    std::vector<Location> foodsPursued {};
     Bot();
 
     // Plays a single game of Ants
