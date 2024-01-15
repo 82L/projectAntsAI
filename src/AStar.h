@@ -1,9 +1,12 @@
 ﻿#ifndef ASTAR_H_
 #define ASTAR_H_
+#pragma once
 #include <vector>
 #include "State.h"
 #include "Location.h"
 #include "AStarNode.h"
+#include <stack>
+// #include "Direction.h"
 
 class AStar
 {

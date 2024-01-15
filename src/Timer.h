@@ -4,6 +4,7 @@
 /*
     struct for checking how long it has been since the start of the turn.
 */
+#include <ctime>
 #include <windows.h>
 
 struct Timer

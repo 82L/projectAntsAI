@@ -1,6 +1,5 @@
 ﻿#include "AStar.h"
 
-#include "AStarNode.h"
 
 AStar::AStar(State *state)
 {

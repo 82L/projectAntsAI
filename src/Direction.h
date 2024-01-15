@@ -1,5 +1,8 @@
-﻿#pragma once
+﻿#ifndef DIRECTION_H_
+#define DIRECTION_H_
+#pragma once
 #include <array>
+
 
 enum class DIRECTION
 {
@@ -61,3 +64,5 @@ struct DirectionData
 };
 
 constexpr std::array<DIRECTION, 4> DIRECTIONS = {DIRECTION::N,DIRECTION::E,DIRECTION::S,DIRECTION::W};
+
+#endif

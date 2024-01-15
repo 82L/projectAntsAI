@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿#ifndef ASTARNODE_H_
+#define ASTARNODE_H_
+#pragma once
 #include "Direction.h"
 #include "Location.h"
 
@@ -17,3 +19,4 @@ struct AStarNode
         this->direction = direction;
     }
 };
+#endif

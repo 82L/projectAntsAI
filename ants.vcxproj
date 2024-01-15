@@ -51,6 +51,7 @@
         </Link>
     </ItemDefinitionGroup>
     <ItemGroup>
+        <ClCompile Include="src\Ant.cpp" />
         <ClCompile Include="src\AStar.cpp" />
         <ClCompile Include="src\AStarNode.cpp" />
         <ClCompile Include="src\Bot.cpp" />
@@ -58,6 +59,7 @@
         <ClCompile Include="src\State.cpp" />
     </ItemGroup>
     <ItemGroup>
+        <ClInclude Include="src\Ant.h" />
         <ClInclude Include="src\AStar.h" />
         <ClInclude Include="src\AStarNode.h" />
         <ClInclude Include="src\Bot.h"/>

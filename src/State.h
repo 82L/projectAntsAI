@@ -1,5 +1,6 @@
 #ifndef STATE_H_
 #define STATE_H_
+#pragma once
 #include <iostream>
 #include <stdio.h>
 #include <cstdlib>
@@ -12,9 +13,9 @@
 
 #include "Timer.h"
 #include "Bug.h"
+#include "Direction.h"
 #include "Square.h"
 #include "Location.h"
-#include "Direction.h"
 
 /*
     struct to store current state of the game information
@@ -29,6 +30,8 @@ struct State
     int currentTurn;
     int turnsCount;
     int noPlayers;
+    // always equal to 0
+    // const int playerId = 0;
 
     double attackRadius;
     double spawnRadius;
