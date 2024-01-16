@@ -20,6 +20,8 @@ void Bot::PlayGame()
     // Continues making moves while the game is not over
     while(std::cin >> currentState)
     {
+        // Reset next moves
+        nextAntsPositions.clear();
         currentState.UpdateVisionInformation();
         MakeMoves();
         EndTurn();
@@ -102,7 +104,7 @@ void Bot::StartLogic()
                 pSavedPath = CreateFoodPath(ant);
                 if(pSavedPath!=nullptr)
                 {
-                    pCurrentAnt->currentJob = JOB::CollectingFood;
+         😭           pCurrentAnt->currentJob = JOB::CollectingFood;
                     foodGatherers++;
                 }
             }
@@ -309,7 +311,27 @@ void Bot::DecreaseStats(Ant *pCurrentAnt)
 
 bool Bot::CheckLocationValidity(Location toCheck)
 {
-    return currentState.grid[toCheck.row][toCheck.col].CheckSquareIsValidForMove();
+    bool found = false;
+    for (auto it : nextAntsPositions)
+    {
+        if (it == toCheck)
+        {
+            found = true;
+            break;
+        }
+    }
+    
+    if (found)
+    {
+        currentState.bug << "Collisions Found\n";
+    }
+    bool isValid = currentState.grid[toCheck.row][toCheck.col].CheckSquareIsValidForMove() && !found;
+
+    if (isValid)
+    {
+        nextAntsPositions.push_back(toCheck);
+    }
+    return isValid;
 }
 void Bot::CleanVectors()
 {

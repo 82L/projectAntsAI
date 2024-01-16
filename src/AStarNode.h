@@ -10,7 +10,7 @@ struct AStarNode
     Location location;
     AStarNode *pPreviousNode;
     int cost = 0;
-    DIRECTION direction;
+    DIRECTION direction; // Direction of previous node
     
     AStarNode(Location location, AStarNode *previousNode, const int cost, const DIRECTION direction)
     {

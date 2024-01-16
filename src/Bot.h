@@ -15,6 +15,7 @@ struct Bot
     AStar *pAStarResolver;
     std::vector<Ant*> trackedAnts {};
     std::vector<Location> foodsPursued = std::vector<Location>();
+    std::vector<Location> nextAntsPositions {};
     std::vector<std::pair<Location, int>*> hillsPursued = std::vector<std::pair<Location,int>*>();
     std::vector<Location> enemyPursued = std::vector<Location>();
     int foodGatherers = 0;
