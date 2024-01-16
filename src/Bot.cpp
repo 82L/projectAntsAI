@@ -35,7 +35,7 @@ void Bot::MakeMoves()
     // Picks out moves for each ant
     // if(currentState.myAnts.size() < 10)
     // {
-        StartLogic();
+    StartLogic();
     // }
     CleanVectors();
     currentState.bug << "time taken: " << currentState.timer.GetDuration() << "ms" << std::endl << std::endl;
@@ -46,11 +46,11 @@ void Bot::StartLogic()
     for(int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
         auto iTrackedAnt = std::find_if(trackedAnts.begin(),
-                                       trackedAnts.end(),
-                                       [&](Ant *pAnt)
-                                       {
-                                           return pAnt->currentLocation == currentState.myAnts[ant];
-                                       });
+                                        trackedAnts.end(),
+                                        [&](Ant *pAnt)
+                                        {
+                                            return pAnt->currentLocation == currentState.myAnts[ant];
+                                        });
         Ant *pCurrentAnt;
         //Test if we found an ant
         if(iTrackedAnt == trackedAnts.end())
@@ -62,7 +62,7 @@ void Bot::StartLogic()
         else
         {
             pCurrentAnt = (*iTrackedAnt);
-          
+
             // if(rand() % 10 == 9)
             // {
             //     if(pCurrentAnt->savedPath != nullptr && !pCurrentAnt->savedPath->empty())
@@ -73,7 +73,7 @@ void Bot::StartLogic()
             //     }
             // }
         }
-        pCurrentAnt->hasPlayed=true;
+        pCurrentAnt->hasPlayed = true;
         // if there is no current path
         if(pCurrentAnt->savedPath == nullptr || pCurrentAnt->savedPath->empty())
         {
@@ -82,27 +82,27 @@ void Bot::StartLogic()
             if(foodGatherers > 10)
             {
                 pSavedPath = CreateAttackPathHill(ant);
-                if(pSavedPath!=nullptr)
+                if(pSavedPath != nullptr)
                 {
-                    
+
                     pCurrentAnt->currentJob = JOB::AttackingHill;
                     attackersHill++;
                 }
                 else
                 {
                     pSavedPath = CreateAttackPathEnemy(ant);
-                    if(pSavedPath!=nullptr)
+                    if(pSavedPath != nullptr)
                     {
-                    
+
                         pCurrentAnt->currentJob = JOB::AttackingEnemy;
                         attackersAnt++;
                     }
                 }
             }
-            if(pSavedPath==nullptr)
+            if(pSavedPath == nullptr)
             {
                 pSavedPath = CreateFoodPath(ant);
-                if(pSavedPath!=nullptr)
+                if(pSavedPath != nullptr)
                 {
          😭           pCurrentAnt->currentJob = JOB::CollectingFood;
                     foodGatherers++;
@@ -112,7 +112,7 @@ void Bot::StartLogic()
             {
                 currentState.bug << "Path found number " << ant << "\n";
                 // foodsPursued.push_back(foodTracked);
-               
+
                 pCurrentAnt->savedPath = pSavedPath;
                 AntMakeMove(pCurrentAnt, ant);
             }
@@ -124,20 +124,18 @@ void Bot::StartLogic()
                 int testNumber = 0;
                 do
                 {
-                    direction = static_cast<DIRECTION>(rand() % 4);
+                    direction = DIRECTION(rand() % 4);
                     // int value = rand()%4;
-                    antCheckLocation = currentState.GetLocation(currentState.myAnts[ant],direction);
+                    antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
                     testNumber++;
-                }while(!CheckLocationValidity(antCheckLocation) && testNumber <20);
-                if(testNumber<20 && CheckLocationValidity(antCheckLocation))
+                }
+                while(!CheckLocationValidity(antCheckLocation) && testNumber < 20);
+                if(testNumber < 20 && CheckLocationValidity(antCheckLocation))
                 {
                     currentState.bug << "Direction for ant " << ant << "\n";
                     currentState.MakeAntMove(currentState.myAnts[ant], direction);
                 }
-             
-                    
 
-                
             }
 
         }
@@ -147,34 +145,52 @@ void Bot::StartLogic()
         }
     }
 }
+
 std::vector<DIRECTION>* Bot::CreateFoodPath(int ant)
 {
     std::vector<DIRECTION> *pNewPath = nullptr;
     if(!currentState.foods.empty())
     {
-        Location foodTracked = currentState.foods[0];
-        for(auto food : currentState.foods)
+        std::vector<Location> foods = currentState.foods;
+        foods.erase(std::remove_if(foods.begin(),
+                                   foods.end(),
+                                   [&](Location foodLocation)
+                                   {
+                                       return std::find(foodsPursued.begin(), foodsPursued.end(), foodLocation) !=
+                                           foodsPursued.end();
+                                   }),
+                    foods.end());
+        std::sort(foods.begin(),
+                  foods.end(),
+                  [&](Location location1, Location location2)
+                  {
+                      return currentState.GetWrappedDistance(currentState.myAnts[ant], location1)
+                          < currentState.GetWrappedDistance(currentState.myAnts[ant], location2);
+                  });
+        Location foodTracked = foods[0];
+        for(int i = 0; i < 10 && !foods.empty(); i++)
         {
-            if(std::find(foodsPursued.begin(), foodsPursued.end(), food) == foodsPursued.end())
-            {
-                // std::vector<DIRECTION> *path =nullptr;
-                std::vector<DIRECTION> *pPath = pAStarResolver->GetPathInstructionsDirection(
+            Location food = foods.back();
+            foods.pop_back();
+            // std::vector<DIRECTION> *path =nullptr;
+            std::vector<DIRECTION> *pPath = pAStarResolver->GetPathInstructionsDirection(
                 currentState.myAnts[ant],
                 food);
-                if(pPath != nullptr && (pNewPath == nullptr || pNewPath->size() > pPath->size()))
-                {
-                    pNewPath = pPath;
-                    foodTracked = food;
-                }
+            if(pPath != nullptr && (pNewPath == nullptr || pNewPath->size() > pPath->size()))
+            {
+                pNewPath = pPath;
+                foodTracked = food;
             }
+
         }
-        if(pNewPath!= nullptr)
+        if(pNewPath != nullptr)
         {
             foodsPursued.push_back(foodTracked);
         }
     }
     return pNewPath;
 }
+
 std::vector<DIRECTION>* Bot::CreateAttackPathHill(int ant)
 {
     std::vector<DIRECTION> *pSavedPath = nullptr;
@@ -184,10 +200,12 @@ std::vector<DIRECTION>* Bot::CreateAttackPathHill(int ant)
         std::pair<Location, int> *pPair = nullptr;
         for(auto hill : currentState.enemyHills)
         {
-            auto iFound = std::find_if(hillsPursued.begin(), hillsPursued.end(), [&](std::pair<Location, int> *pCurrentPair)
-            {
-                return pCurrentPair->first == hill;
-            });
+            auto iFound = std::find_if(hillsPursued.begin(),
+                                       hillsPursued.end(),
+                                       [&](std::pair<Location, int> *pCurrentPair)
+                                       {
+                                           return pCurrentPair->first == hill;
+                                       });
             if(iFound == hillsPursued.end() || (*iFound)->second < 5)
             {
                 std::vector<DIRECTION> *pPath = pAStarResolver->GetPathInstructionsDirection(
@@ -197,18 +215,18 @@ std::vector<DIRECTION>* Bot::CreateAttackPathHill(int ant)
                 {
                     pSavedPath = pPath;
                     hillsTracked = hill;
-                    if(iFound!= hillsPursued.end())
+                    if(iFound != hillsPursued.end())
                     {
                         pPair = *iFound;
                     }
                     else
                     {
-                        pPair =nullptr;
+                        pPair = nullptr;
                     }
                 }
             }
         }
-        if(pSavedPath!= nullptr)
+        if(pSavedPath != nullptr)
         {
             if(pPair == nullptr)
             {
@@ -218,11 +236,11 @@ std::vector<DIRECTION>* Bot::CreateAttackPathHill(int ant)
             {
                 pPair->second++;
             }
-          
+
         }
     }
     return pSavedPath;
-  
+
 }
 
 std::vector<DIRECTION>* Bot::CreateAttackPathEnemy(int ant)
@@ -245,18 +263,20 @@ std::vector<DIRECTION>* Bot::CreateAttackPathEnemy(int ant)
                 }
             }
         }
-        if(pSavedPath!= nullptr)
+        if(pSavedPath != nullptr)
         {
             enemyPursued.push_back(enemyTracked);
         }
     }
     return pSavedPath;
-  
+
 }
+
 void Bot::AntMakeMove(Ant *pCurrentAnt, int antNumber)
 {
     currentState.bug << "Number " << antNumber << " follows path \n";
-    Location antCheckLocation = currentState.GetLocation(currentState.myAnts[antNumber], pCurrentAnt->savedPath->back());
+    Location antCheckLocation = currentState.
+        GetLocation(currentState.myAnts[antNumber], pCurrentAnt->savedPath->back());
     if(CheckLocationValidity(antCheckLocation))
     {
         currentState.MakeAntMove(currentState.myAnts[antNumber], pCurrentAnt->savedPath->back());
@@ -333,33 +353,47 @@ bool Bot::CheckLocationValidity(Location toCheck)
     }
     return isValid;
 }
+
 void Bot::CleanVectors()
 {
-    foodsPursued.erase(std::remove_if(foodsPursued.begin(), foodsPursued.end(), [&](Location location)
-    {
-        return !currentState.grid[location.row][location.col].isFood;
-    }), foodsPursued.end());
-    hillsPursued.erase(std::remove_if(hillsPursued.begin(), hillsPursued.end(), [&](std::pair<Location, int> *pPair)
-    {
-        return !currentState.grid[pPair->first.row][pPair->first.col].isHill;
-    }), hillsPursued.end());
-    enemyPursued.erase(std::remove_if(enemyPursued.begin(), enemyPursued.end(), [&](Location location)
-    {
-        return currentState.grid[location.row][location.col].ant > 0;
-    }), enemyPursued.end());
+    foodsPursued.erase(std::remove_if(foodsPursued.begin(),
+                                      foodsPursued.end(),
+                                      [&](Location location)
+                                      {
+                                          return !currentState.grid[location.row][location.col].isFood;
+                                      }),
+                       foodsPursued.end());
+    hillsPursued.erase(std::remove_if(hillsPursued.begin(),
+                                      hillsPursued.end(),
+                                      [&](std::pair<Location, int> *pPair)
+                                      {
+                                          return !currentState.grid[pPair->first.row][pPair->first.col].isHill;
+                                      }),
+                       hillsPursued.end());
+    enemyPursued.erase(std::remove_if(enemyPursued.begin(),
+                                      enemyPursued.end(),
+                                      [&](Location location)
+                                      {
+                                          return currentState.grid[location.row][location.col].ant > 0;
+                                      }),
+                       enemyPursued.end());
 
-    trackedAnts.erase(std::remove_if(trackedAnts.begin(), trackedAnts.end(), [&](Ant *pAnt)
-   {
-        if(!pAnt->hasPlayed)
-        {
-            DecreaseStats(pAnt);
-            return true;
-        }
-        
-        pAnt->hasPlayed=false;
-        return false;
-   }), trackedAnts.end());
+    trackedAnts.erase(std::remove_if(trackedAnts.begin(),
+                                     trackedAnts.end(),
+                                     [&](Ant *pAnt)
+                                     {
+                                         if(!pAnt->hasPlayed)
+                                         {
+                                             DecreaseStats(pAnt);
+                                             return true;
+                                         }
+
+                                         pAnt->hasPlayed = false;
+                                         return false;
+                                     }),
+                      trackedAnts.end());
 }
+
 void Bot::EndTurn()
 {
     if(currentState.currentTurn > 0)
