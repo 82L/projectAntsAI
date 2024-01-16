@@ -23,6 +23,7 @@ struct Ant
     Location previousLocation;
     JOB currentJob = JOB::UnEmployed;
     bool hasWaited = false;
+    bool hasPlayed = false;
     Ant() = default;
 };
 #endif //ANT_H_

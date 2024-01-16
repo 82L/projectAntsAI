@@ -40,17 +40,17 @@ struct State
     double loadTime;
     double turnTime;
 
-    std::vector<double> scores;
+    std::vector<double> scores {};
     bool isGameOver;
     int64_t playerSeed;
 
-    std::vector<std::vector<Square>> grid;
+    std::vector<std::vector<Square>> grid {};
 
-    std::vector<Location> myAnts;
-    std::vector<Location> enemyAnts;
-    std::vector<Location> myHills;
-    std::vector<Location> enemyHills;
-    std::vector<Location> foods;
+    std::vector<Location> myAnts {};
+    std::vector<Location> enemyAnts {};
+    std::vector<Location> myHills {};
+    std::vector<Location> enemyHills {};
+    std::vector<Location> foods {};
 
     Timer timer;
     Bug bug;

@@ -4,6 +4,7 @@
 
 Bot::Bot()
 {
+    srand(time(nullptr));
 }
 
 void Bot::PlayGame()
@@ -12,7 +13,7 @@ void Bot::PlayGame()
     std::cin >> currentState;
     currentState.Setup();
     currentState.bug << "Astar Creation" << "\n";
-    aStarResolver = new AStar(&currentState);
+    pAStarResolver = new AStar(&currentState);
     currentState.bug << "Astar Created" << "\n";
     EndTurn();
 
@@ -30,10 +31,10 @@ void Bot::MakeMoves()
     currentState.bug << "turn " << currentState.currentTurn << ":" << "\n";
     // currentState.bug << currentState << "\n";
     // Picks out moves for each ant
-    if(currentState.myAnts.size() < 10)
-    {
+    // if(currentState.myAnts.size() < 10)
+    // {
         StartLogic();
-    }
+    // }
     CleanVectors();
     currentState.bug << "time taken: " << currentState.timer.GetDuration() << "ms" << std::endl << std::endl;
 }
@@ -42,113 +43,251 @@ void Bot::StartLogic()
 {
     for(int ant = 0; ant < static_cast<int>(currentState.myAnts.size()); ant++)
     {
-        auto trackedAnt = std::find_if(trackedAnts.begin(),
+        auto iTrackedAnt = std::find_if(trackedAnts.begin(),
                                        trackedAnts.end(),
-                                       [&](Ant *x)
+                                       [&](Ant *pAnt)
                                        {
-                                           return x->currentLocation == currentState.myAnts[ant];
+                                           return pAnt->currentLocation == currentState.myAnts[ant];
                                        });
-        Ant *currentAnt;
+        Ant *pCurrentAnt;
         //Test if we found an ant
-        if(trackedAnt == trackedAnts.end())
+        if(iTrackedAnt == trackedAnts.end())
         {
-            currentAnt = new Ant();
-            currentAnt->currentLocation = currentState.myAnts[ant];
-            trackedAnts.push_back(currentAnt);
+            pCurrentAnt = new Ant();
+            pCurrentAnt->currentLocation = currentState.myAnts[ant];
+            trackedAnts.push_back(pCurrentAnt);
         }
         else
         {
-            currentAnt = (*trackedAnt);
+            pCurrentAnt = (*iTrackedAnt);
+          
+            // if(rand() % 10 == 9)
+            // {
+            //     if(pCurrentAnt->savedPath != nullptr && !pCurrentAnt->savedPath->empty())
+            //     {
+            //         DecreaseStats(pCurrentAnt);
+            //         pCurrentAnt->currentJob =UnEmployed;
+            //         pCurrentAnt->savedPath->clear();
+            //     }
+            // }
         }
+        pCurrentAnt->hasPlayed=true;
         // if there is no current path
-        if(currentAnt->savedPath == nullptr || currentAnt->savedPath->empty())
+        if(pCurrentAnt->savedPath == nullptr || pCurrentAnt->savedPath->empty())
         {
             currentState.bug << "Finding path for number " << ant << "\n";
-            std::vector<DIRECTION> *savedPath = nullptr;
-            Location foodTracked = currentState.foods[0];
-            for(auto food : currentState.foods)
+            std::vector<DIRECTION> *pSavedPath = nullptr;
+            if(foodGatherers > 10)
             {
-                if(std::find(foodsPursued.begin(), foodsPursued.end(), food) == foodsPursued.end())
+                pSavedPath = CreateAttackPathHill(ant);
+                if(pSavedPath!=nullptr)
                 {
-                    std::vector<DIRECTION> *path = aStarResolver->GetPathInstructionsDirection(
-                        currentState.myAnts[ant],
-                        food);
-                    if(path != nullptr && (savedPath == nullptr || savedPath->size() > path->size()))
+                    
+                    pCurrentAnt->currentJob = JOB::AttackingHill;
+                    attackersHill++;
+                }
+                else
+                {
+                    pSavedPath = CreateAttackPathEnemy(ant);
+                    if(pSavedPath!=nullptr)
                     {
-                        savedPath = path;
-                        foodTracked = food;
+                    
+                        pCurrentAnt->currentJob = JOB::AttackingEnemy;
+                        attackersAnt++;
                     }
                 }
             }
-            if(savedPath != nullptr)
+            if(pSavedPath==nullptr)
+            {
+                pSavedPath = CreateFoodPath(ant);
+                if(pSavedPath!=nullptr)
+                {
+                    pCurrentAnt->currentJob = JOB::CollectingFood;
+                    foodGatherers++;
+                }
+            }
+            if(pSavedPath != nullptr)
             {
                 currentState.bug << "Path found number " << ant << "\n";
-                foodsPursued.push_back(foodTracked);
-                currentAnt->currentJob = JOB::CollectingFood;
-                foodGatherers++;
-                currentAnt->savedPath = savedPath;
-                AntMakeMove(currentAnt, ant);
+                // foodsPursued.push_back(foodTracked);
+               
+                pCurrentAnt->savedPath = pSavedPath;
+                AntMakeMove(pCurrentAnt, ant);
             }
             else
             {
                 currentState.bug << "No found path for number " << ant << "\n";
-                for(const auto direction : DIRECTIONS)
+                Location antCheckLocation;
+                DIRECTION direction;
+                int testNumber = 0;
+                do
                 {
-                    Location antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
-                    if(CheckLocationValidity(antCheckLocation))
-                    {
-                        currentState.MakeAntMove(currentState.myAnts[ant], direction);
-                        break;
-                    }
-
+                    direction = static_cast<DIRECTION>(rand() % 4);
+                    // int value = rand()%4;
+                    antCheckLocation = currentState.GetLocation(currentState.myAnts[ant],direction);
+                    testNumber++;
+                }while(!CheckLocationValidity(antCheckLocation) && testNumber <20);
+                if(testNumber<20 && CheckLocationValidity(antCheckLocation))
+                {
+                    currentState.bug << "Direction for ant " << ant << "\n";
+                    currentState.MakeAntMove(currentState.myAnts[ant], direction);
                 }
+             
+                    
+
+                
             }
 
         }
-        else if(!currentAnt->savedPath->empty())
+        else if(!pCurrentAnt->savedPath->empty())
         {
-            AntMakeMove(currentAnt, ant);
+            AntMakeMove(pCurrentAnt, ant);
         }
     }
 }
+std::vector<DIRECTION>* Bot::CreateFoodPath(int ant)
+{
+    std::vector<DIRECTION> *pNewPath = nullptr;
+    if(!currentState.foods.empty())
+    {
+        Location foodTracked = currentState.foods[0];
+        for(auto food : currentState.foods)
+        {
+            if(std::find(foodsPursued.begin(), foodsPursued.end(), food) == foodsPursued.end())
+            {
+                // std::vector<DIRECTION> *path =nullptr;
+                std::vector<DIRECTION> *pPath = pAStarResolver->GetPathInstructionsDirection(
+                currentState.myAnts[ant],
+                food);
+                if(pPath != nullptr && (pNewPath == nullptr || pNewPath->size() > pPath->size()))
+                {
+                    pNewPath = pPath;
+                    foodTracked = food;
+                }
+            }
+        }
+        if(pNewPath!= nullptr)
+        {
+            foodsPursued.push_back(foodTracked);
+        }
+    }
+    return pNewPath;
+}
+std::vector<DIRECTION>* Bot::CreateAttackPathHill(int ant)
+{
+    std::vector<DIRECTION> *pSavedPath = nullptr;
+    if(!currentState.enemyHills.empty())
+    {
+        Location hillsTracked = currentState.enemyHills[0];
+        std::pair<Location, int> *pPair = nullptr;
+        for(auto hill : currentState.enemyHills)
+        {
+            auto iFound = std::find_if(hillsPursued.begin(), hillsPursued.end(), [&](std::pair<Location, int> *pCurrentPair)
+            {
+                return pCurrentPair->first == hill;
+            });
+            if(iFound == hillsPursued.end() || (*iFound)->second < 5)
+            {
+                std::vector<DIRECTION> *pPath = pAStarResolver->GetPathInstructionsDirection(
+                    currentState.myAnts[ant],
+                    hill);
+                if(pPath != nullptr && (pSavedPath == nullptr || pSavedPath->size() > pPath->size()))
+                {
+                    pSavedPath = pPath;
+                    hillsTracked = hill;
+                    if(iFound!= hillsPursued.end())
+                    {
+                        pPair = *iFound;
+                    }
+                    else
+                    {
+                        pPair =nullptr;
+                    }
+                }
+            }
+        }
+        if(pSavedPath!= nullptr)
+        {
+            if(pPair == nullptr)
+            {
+                hillsPursued.push_back(new std::pair<Location, int>(hillsTracked, 1));
+            }
+            else
+            {
+                pPair->second++;
+            }
+          
+        }
+    }
+    return pSavedPath;
+  
+}
 
-void Bot::AntMakeMove(Ant *currentAnt, int antNumber)
+std::vector<DIRECTION>* Bot::CreateAttackPathEnemy(int ant)
+{
+    std::vector<DIRECTION> *pSavedPath = nullptr;
+    if(!currentState.enemyAnts.empty())
+    {
+        Location enemyTracked = currentState.enemyAnts[0];
+        for(auto enemyAnt : currentState.enemyAnts)
+        {
+            if(std::find(enemyPursued.begin(), enemyPursued.end(), enemyAnt) == enemyPursued.end())
+            {
+                std::vector<DIRECTION> *pPath = pAStarResolver->GetPathInstructionsDirection(
+                    currentState.myAnts[ant],
+                    enemyAnt);
+                if(pPath != nullptr && (pSavedPath == nullptr || pSavedPath->size() > pPath->size()))
+                {
+                    pSavedPath = pPath;
+                    enemyTracked = enemyAnt;
+                }
+            }
+        }
+        if(pSavedPath!= nullptr)
+        {
+            enemyPursued.push_back(enemyTracked);
+        }
+    }
+    return pSavedPath;
+  
+}
+void Bot::AntMakeMove(Ant *pCurrentAnt, int antNumber)
 {
     currentState.bug << "Number " << antNumber << " follows path \n";
-    Location antCheckLocation = currentState.GetLocation(currentState.myAnts[antNumber], currentAnt->savedPath->back());
+    Location antCheckLocation = currentState.GetLocation(currentState.myAnts[antNumber], pCurrentAnt->savedPath->back());
     if(CheckLocationValidity(antCheckLocation))
     {
-        currentState.MakeAntMove(currentState.myAnts[antNumber], currentAnt->savedPath->back());
-        currentAnt->previousLocation = currentAnt->currentLocation;
-        currentAnt->currentLocation = antCheckLocation;
-        currentAnt->savedPath->pop_back();
-        currentAnt->hasWaited = false;
-        if(currentAnt->savedPath->empty())
+        currentState.MakeAntMove(currentState.myAnts[antNumber], pCurrentAnt->savedPath->back());
+        pCurrentAnt->previousLocation = pCurrentAnt->currentLocation;
+        pCurrentAnt->currentLocation = antCheckLocation;
+        pCurrentAnt->savedPath->pop_back();
+        pCurrentAnt->hasWaited = false;
+        if(pCurrentAnt->savedPath->empty())
         {
-            UpdateStats(currentAnt);
-            currentAnt->currentJob = UnEmployed;
+            DecreaseStats(pCurrentAnt);
+            pCurrentAnt->currentJob = UnEmployed;
         }
     }
     else
     {
-        if(!currentAnt->hasWaited)
+        if(!pCurrentAnt->hasWaited)
         {
-            currentAnt->hasWaited = true;
+            pCurrentAnt->hasWaited = true;
         }
         else
         {
-            currentAnt->savedPath->clear();
-            UpdateStats(currentAnt);
-            currentAnt->currentJob = UnEmployed;
-            currentAnt->hasWaited = false;
+            pCurrentAnt->savedPath->clear();
+            DecreaseStats(pCurrentAnt);
+            pCurrentAnt->currentJob = UnEmployed;
+            pCurrentAnt->hasWaited = false;
         }
 
     }
 }
 
-void Bot::UpdateStats(Ant *currentAnt)
+void Bot::DecreaseStats(Ant *pCurrentAnt)
 {
-    switch(currentAnt->currentJob)
+    switch(pCurrentAnt->currentJob)
     {
     case JOB::UnEmployed:
         break;
@@ -178,6 +317,26 @@ void Bot::CleanVectors()
     {
         return !currentState.grid[location.row][location.col].isFood;
     }), foodsPursued.end());
+    hillsPursued.erase(std::remove_if(hillsPursued.begin(), hillsPursued.end(), [&](std::pair<Location, int> *pPair)
+    {
+        return !currentState.grid[pPair->first.row][pPair->first.col].isHill;
+    }), hillsPursued.end());
+    enemyPursued.erase(std::remove_if(enemyPursued.begin(), enemyPursued.end(), [&](Location location)
+    {
+        return currentState.grid[location.row][location.col].ant > 0;
+    }), enemyPursued.end());
+
+    trackedAnts.erase(std::remove_if(trackedAnts.begin(), trackedAnts.end(), [&](Ant *pAnt)
+   {
+        if(!pAnt->hasPlayed)
+        {
+            DecreaseStats(pAnt);
+            return true;
+        }
+        
+        pAnt->hasPlayed=false;
+        return false;
+   }), trackedAnts.end());
 }
 void Bot::EndTurn()
 {
@@ -185,5 +344,5 @@ void Bot::EndTurn()
         currentState.Reset();
     currentState.currentTurn++;
 
-    std::cout << "go" << std::endl;
+    std::cout << "go" << '\n';
 }

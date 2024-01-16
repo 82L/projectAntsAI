@@ -12,9 +12,11 @@
 struct Bot
 {
     State currentState;
-    AStar * aStarResolver;
+    AStar *pAStarResolver;
     std::vector<Ant*> trackedAnts {};
-    std::vector<Location> foodsPursued {};
+    std::vector<Location> foodsPursued = std::vector<Location>();
+    std::vector<std::pair<Location, int>*> hillsPursued = std::vector<std::pair<Location,int>*>();
+    std::vector<Location> enemyPursued = std::vector<Location>();
     int foodGatherers = 0;
     int attackersAnt = 0;
     int attackersHill = 0;
@@ -28,8 +30,11 @@ struct Bot
     // Makes moves for a single turn
     void MakeMoves();
     void StartLogic();
-    void AntMakeMove(Ant *currentAnt, int antNumber);
-    void UpdateStats(Ant *currentAnt);
+    std::vector<DIRECTION>* CreateFoodPath(int ant);
+    std::vector<DIRECTION>* CreateAttackPathHill(int ant);
+    std::vector<DIRECTION>* CreateAttackPathEnemy(int ant);
+    void AntMakeMove(Ant *pCurrentAnt, int antNumber);
+    void DecreaseStats(Ant *pCurrentAnt);
     bool CheckLocationValidity(Location toCheck);
     void CleanVectors();
 

@@ -13,57 +13,57 @@ class AStar
     /**
      * \brief the state of the game, used to get grid in functions
      */
-    State *_gameState;
+    State *_pGameState;
     
     /**
      * \brief Calculate estimated cost to go from one location to another
-     * \param givenLocation current location to search heuristic from
-     * \param endLocation End location that must be found
+     * \param pGivenLocation current location to search heuristic from
+     * \param pEndLocation End location that must be found
      * \return Estimated cost to go from one another
      */
-    double HeuristicLocationCalculator(const Location *givenLocation, const Location *endLocation) const;
+    double HeuristicLocationCalculator(const Location *pGivenLocation, const Location *pEndLocation) const;
 
     /**
      * \brief Check neighbors from baseLocation, and add them to uncheckedNodes if they're not already in it or
      * in checkedNodes
-     * \param baseLocation Location to check neighbors from
-     * \param uncheckedNodes List of nodes who were not checked
-     * \param checkedNodes List of nodes who were checked
+     * \param pBaseLocation Location to check neighbors from
+     * \param pUncheckedNodes List of nodes who were not checked
+     * \param pCheckedNodes List of nodes who were checked
      */
-    void AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> *uncheckedNodes,
-                            std::vector<AStarNode*> *checkedNodes) const;
+    void AddNeighborsToList(AStarNode *pBaseLocation, std::vector<AStarNode*> *pUncheckedNodes,
+                            std::vector<AStarNode*> *pCheckedNodes) const;
 
     /**
      * \brief Create path from linked AStarNodes
-     * \param endNode last node used 
+     * \param pEndNode last node used 
      * \return path to the location
      */
-    static std::vector<DIRECTION>* CreatePathDirections(const AStarNode *endNode);
+    static std::vector<DIRECTION>* CreatePathDirections(const AStarNode *pEndNode);
 
     /**
      * \brief Get NextNode from list
-     * \param uncheckedNodes list of possible next nodes
-     * \param endLocation Location targeted
+     * \param pUncheckedNodes list of possible next nodes
+     * \param pEndLocation Location targeted
      * \return the next node to be checked
      */
-    AStarNode* GetNextNode(std::vector<AStarNode *> *uncheckedNodes, Location *endLocation) const;
+    AStarNode* GetNextNode(std::vector<AStarNode *> *pUncheckedNodes, Location *pEndLocation) const;
 
     /**
      * \brief Get The Best Node out of the unchecked node list
-     * \param uncheckedNodes list of unchecked node
-     * \param endLocation end location targeted
+     * \param pUncheckedNodes list of unchecked node
+     * \param pEndLocation end location targeted
      * \return the node to be processed next
      */
-    AStarNode* GetBestNodeForPath(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const;
+    AStarNode* GetBestNodeForPath(std::vector<AStarNode*> *pUncheckedNodes, const Location *pEndLocation) const;
 
 
 public:
  
     /**
      * \brief Constructor to start the Astar calculator
-     * \param state game State, needed because of grid calculations
+     * \param pState game State, needed because of grid calculations
      */
-    explicit AStar(State *state);
+    explicit AStar(State *pState);
  
     /**
      * \brief 

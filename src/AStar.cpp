@@ -1,120 +1,120 @@
 ﻿#include "AStar.h"
 
 
-AStar::AStar(State *state)
+AStar::AStar(State *pState)
 {
-    _gameState = state;
+    _pGameState = pState;
 }
 
 std::vector<DIRECTION>* AStar::GetPathInstructionsDirection(Location startLocation, Location endLocation) const
 {
-    std::vector<AStarNode*> *uncheckedNodes = new std::vector<AStarNode *>();
-    AStarNode* startNode = new AStarNode(startLocation, nullptr, 0, DIRECTION::N);
-    uncheckedNodes->push_back(startNode);
-    std::vector<AStarNode*> *checkedNodes = new std::vector<AStarNode *>();
-    AStarNode* endNode = nullptr;
-    while(!uncheckedNodes->empty() && endNode == nullptr)
+    std::vector<AStarNode*> *pUncheckedNodes = new std::vector<AStarNode *>();
+    AStarNode *pStartNode = new AStarNode(startLocation, nullptr, 0, DIRECTION::N);
+    pUncheckedNodes->push_back(pStartNode);
+    std::vector<AStarNode*> *pCheckedNodes = new std::vector<AStarNode *>();
+    AStarNode *pEndNode = nullptr;
+    while(!pUncheckedNodes->empty() && pEndNode == nullptr)
     {
-        AStarNode* nodeToCheck = GetNextNode(uncheckedNodes, &endLocation);
-        if(nodeToCheck->location == endLocation)
+        AStarNode *pNodeToCheck = GetNextNode(pUncheckedNodes, &endLocation);
+        if(pNodeToCheck->location == endLocation)
         {
-            endNode = nodeToCheck;
+            pEndNode = pNodeToCheck;
             break;
         }
-        AddNeighborsToList(nodeToCheck, uncheckedNodes, checkedNodes);
-        checkedNodes->push_back(nodeToCheck);
+        AddNeighborsToList(pNodeToCheck, pUncheckedNodes, pCheckedNodes);
+        pCheckedNodes->push_back(pNodeToCheck);
     }
     // return nullptr;
 
-    if(endNode != nullptr)
+    if(pEndNode != nullptr)
     {
-        std::vector<DIRECTION>* path = CreatePathDirections(endNode);
-        uncheckedNodes->clear();
-        checkedNodes->clear();
-        return path;
+        std::vector<DIRECTION> *pPath = CreatePathDirections(pEndNode);
+        pUncheckedNodes->clear();
+        pCheckedNodes->clear();
+        return pPath;
     }
     return nullptr;
     //do the path
 }
 
-double AStar::HeuristicLocationCalculator(const Location* givenLocation, const Location* endLocation) const
+double AStar::HeuristicLocationCalculator(const Location *pGivenLocation, const Location *pEndLocation) const
 {
-   return _gameState->GetWrappedDistance(*givenLocation, *endLocation);
+   return _pGameState->GetWrappedDistance(*pGivenLocation, *pEndLocation);
 }
 
-void AStar::AddNeighborsToList(AStarNode *baseLocation, std::vector<AStarNode*> *uncheckedNodes,  std::vector<AStarNode*> *checkedNodes) const
+void AStar::AddNeighborsToList(AStarNode *pBaseLocation, std::vector<AStarNode*> *pUncheckedNodes,  std::vector<AStarNode*> *pCheckedNodes) const
 {
     for(const auto& direction : DIRECTIONS)
     {
-        Location foundLocation = _gameState->GetLocation(baseLocation->location, direction);
-        if(_gameState->grid[foundLocation.row][foundLocation.col].CheckSquareIsValidCalculation())
+        Location foundLocation = _pGameState->GetLocation(pBaseLocation->location, direction);
+        if(_pGameState->grid[foundLocation.row][foundLocation.col].CheckSquareIsValidCalculation())
         {
-            if(std::find_if(checkedNodes->begin(), checkedNodes->end(), [&](const AStarNode *node)
+            if(std::find_if(pCheckedNodes->begin(), pCheckedNodes->end(), [&](const AStarNode *pNode)
             {
-                return node->location == foundLocation;
-            }) == checkedNodes->end())
+                return pNode->location == foundLocation;
+            }) == pCheckedNodes->end())
             {
-                auto newNode = new AStarNode(foundLocation,baseLocation, baseLocation->cost + 1, direction);
-                auto foundNode = find_if( uncheckedNodes->begin(), uncheckedNodes->end(), [&](const AStarNode *x)
+                AStarNode *pNewNode = new AStarNode(foundLocation,pBaseLocation, pBaseLocation->cost + 1, direction);
+                auto iFoundNode = find_if( pUncheckedNodes->begin(), pUncheckedNodes->end(), [&](const AStarNode *pNode)
                 {
-                    return x->location == newNode->location;
+                    return pNode->location == pNewNode->location;
                 });
-                if(foundNode != uncheckedNodes->end())
+                if(iFoundNode != pUncheckedNodes->end())
                 {
-                    if((*foundNode)->cost > newNode->cost )
+                    if((*iFoundNode)->cost > pNewNode->cost )
                     {
-                        uncheckedNodes->erase(foundNode);
-                        uncheckedNodes->push_back(newNode);
+                        pUncheckedNodes->erase(iFoundNode);
+                        pUncheckedNodes->push_back(pNewNode);
                     }
                     else
                     {
-                        delete newNode;
+                        delete pNewNode;
                     }
                 }else
                 {
-                    uncheckedNodes->push_back(newNode);
+                    pUncheckedNodes->push_back(pNewNode);
                 }
             }
         }
     }
 }
 
-std::vector<DIRECTION>* AStar::CreatePathDirections(const AStarNode *endNode)
+std::vector<DIRECTION>* AStar::CreatePathDirections(const AStarNode *pEndNode)
 {
-    const AStarNode* currentNode = endNode;
-    auto path = new std::vector<DIRECTION>();
+    const AStarNode* pCurrentNode = pEndNode;
+    std::vector<DIRECTION> *pPath = new std::vector<DIRECTION>();
     do {
-        path->push_back(currentNode->direction);
-        currentNode = currentNode->previousNode;
-    } while(currentNode->previousNode != nullptr);
+        pPath->push_back(pCurrentNode->direction);
+        pCurrentNode = pCurrentNode->pPreviousNode;
+    } while(pCurrentNode->pPreviousNode != nullptr);
 
-    return path;
+    return pPath;
 }
 
-AStarNode* AStar::GetNextNode(std::vector<AStarNode*> *uncheckedNodes, Location *endLocation) const
+AStarNode* AStar::GetNextNode(std::vector<AStarNode*> *pUncheckedNodes, Location *pEndLocation) const
 {
-    auto endNode = std::find_if(uncheckedNodes->begin(), uncheckedNodes->end(),
-                                      [&](AStarNode *x)
+    auto iEndNode = std::find_if(pUncheckedNodes->begin(), pUncheckedNodes->end(),
+                                      [&](AStarNode *pNode)
                                       {
-                                          return x->location == *endLocation;
+                                          return pNode->location == *pEndLocation;
                                       });
-    if( endNode != uncheckedNodes->end())
+    if( iEndNode != pUncheckedNodes->end())
     {
-        return *endNode;
+        return *iEndNode;
     }
-    return GetBestNodeForPath(uncheckedNodes, endLocation);
+    return GetBestNodeForPath(pUncheckedNodes, pEndLocation);
 }
 
 
-AStarNode* AStar::GetBestNodeForPath(std::vector<AStarNode*> *uncheckedNodes, const Location *endLocation) const
+AStarNode* AStar::GetBestNodeForPath(std::vector<AStarNode*> *pUncheckedNodes, const Location *pEndLocation) const
 {
-    std::sort(uncheckedNodes->begin(), uncheckedNodes->end(),[&](const AStarNode* node1, const AStarNode* node2)
+    std::sort(pUncheckedNodes->begin(), pUncheckedNodes->end(),[&](const AStarNode *pNode1, const AStarNode *pNode2)
                                               {
-                                                  return (node1->cost + HeuristicLocationCalculator(&node1->location, endLocation))
-                                                      >  (node2->cost + HeuristicLocationCalculator(&node2->location, endLocation));
+                                                  return (pNode1->cost + HeuristicLocationCalculator(&pNode1->location, pEndLocation))
+                                                      >  (pNode2->cost + HeuristicLocationCalculator(&pNode2->location, pEndLocation));
                                               } );
-    const auto returnNode  = uncheckedNodes->back();
-    uncheckedNodes->pop_back();
-    // uncheckedNodes->erase(std::remove(uncheckedNodes->begin(), uncheckedNodes->end(), returnNode), uncheckedNodes->end());
-    return returnNode;
+    AStarNode *pReturnNode  = pUncheckedNodes->back();
+    pUncheckedNodes->pop_back();
+    // pUncheckedNodes->erase(std::remove(pUncheckedNodes->begin(), pUncheckedNodes->end(), returnNode), pUncheckedNodes->end());
+    return pReturnNode;
 }
