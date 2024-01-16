@@ -97,6 +97,10 @@ void Bot::StartLogic()
                         pCurrentAnt->currentJob = JOB::AttackingEnemy;
                         attackersAnt++;
                     }
+                    else
+                    {
+                        pCurrentAnt->currentJob = JOB::Exploring;
+                    }
                 }
             }
             if(pSavedPath == nullptr)
@@ -124,7 +128,7 @@ void Bot::StartLogic()
                 int testNumber = 0;
                 do
                 {
-                    direction = DIRECTION(rand() % 4);
+                    direction = DIRECTIONS[rand() % DIRECTIONS.size()];
                     // int value = rand()%4;
                     antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
                     testNumber++;
@@ -165,10 +169,10 @@ std::vector<DIRECTION>* Bot::CreateFoodPath(int ant)
                   [&](Location location1, Location location2)
                   {
                       return currentState.GetWrappedDistance(currentState.myAnts[ant], location1)
-                          < currentState.GetWrappedDistance(currentState.myAnts[ant], location2);
+                          > currentState.GetWrappedDistance(currentState.myAnts[ant], location2);
                   });
-        Location foodTracked = foods[0];
-        for(int i = 0; i < 10 && !foods.empty(); i++)
+        Location foodTracked = foods.back();
+        for(int i = 0; i < 5 && !foods.empty(); i++)
         {
             Location food = foods.back();
             foods.pop_back();
