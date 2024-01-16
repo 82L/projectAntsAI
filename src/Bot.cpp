@@ -97,10 +97,10 @@ void Bot::StartLogic()
                         pCurrentAnt->currentJob = JOB::AttackingEnemy;
                         attackersAnt++;
                     }
-                    else
-                    {
-                        pCurrentAnt->currentJob = JOB::Exploring;
-                    }
+                    // else
+                    // {
+                    //     pCurrentAnt->currentJob = JOB::Exploring;
+                    // }
                 }
             }
             if(pSavedPath == nullptr)
@@ -108,7 +108,7 @@ void Bot::StartLogic()
                 pSavedPath = CreateFoodPath(ant);
                 if(pSavedPath != nullptr)
                 {
-         😭           pCurrentAnt->currentJob = JOB::CollectingFood;
+                    pCurrentAnt->currentJob = JOB::CollectingFood;
                     foodGatherers++;
                 }
             }
@@ -129,7 +129,6 @@ void Bot::StartLogic()
                 do
                 {
                     direction = DIRECTIONS[rand() % DIRECTIONS.size()];
-                    // int value = rand()%4;
                     antCheckLocation = currentState.GetLocation(currentState.myAnts[ant], direction);
                     testNumber++;
                 }
@@ -155,7 +154,7 @@ std::vector<DIRECTION>* Bot::CreateFoodPath(int ant)
     std::vector<DIRECTION> *pNewPath = nullptr;
     if(!currentState.foods.empty())
     {
-        std::vector<Location> foods = currentState.foods;
+        std::vector<Location> foods = std::vector<Location>(currentState.foods);
         foods.erase(std::remove_if(foods.begin(),
                                    foods.end(),
                                    [&](Location foodLocation)
@@ -335,25 +334,25 @@ void Bot::DecreaseStats(Ant *pCurrentAnt)
 
 bool Bot::CheckLocationValidity(Location toCheck)
 {
-    bool found = false;
-    for (auto it : nextAntsPositions)
-    {
-        if (it == toCheck)
-        {
-            found = true;
-            break;
-        }
-    }
-    
-    if (found)
-    {
-        currentState.bug << "Collisions Found\n";
-    }
-    bool isValid = currentState.grid[toCheck.row][toCheck.col].CheckSquareIsValidForMove() && !found;
+    // bool found = false;
+    // for (auto it : nextAntsPositions)
+    // {
+    //     if (it == toCheck)
+    //     {
+    //         found = true;
+    //         break;
+    //     }
+    // }
+    //
+    // if (found)
+    // {
+    //     currentState.bug << "Collisions Found\n";
+    // }
+    bool isValid = currentState.grid[toCheck.row][toCheck.col].CheckSquareIsValidForMove() ;//&& !found;
 
     if (isValid)
     {
-        nextAntsPositions.push_back(toCheck);
+        //nextAntsPositions.push_back(toCheck);
     }
     return isValid;
 }

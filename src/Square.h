@@ -38,7 +38,7 @@ struct Square
 
     bool CheckSquareIsValidForMove()
     {
-        return !this->isWater && !this->isFood && this->ant == -1 && (!this->isHill || this->hillPlayer != 0);
+        return !this->isWater && !this->isFood && this->ant != 0 && (!this->isHill || this->hillPlayer != 0);
     }
     bool CheckSquareIsValidCalculation()
     {
